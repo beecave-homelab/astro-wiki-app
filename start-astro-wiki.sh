@@ -14,6 +14,7 @@ LOG_FILE="${PWD}/log/astro-wiki.log"
 DELAY_SECONDS=20
 SERVICE_NAME="astro-wiki"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
+NODE_PATH="/home/${SUDO_USER}/.nvm/versions/node/v23.1.0/bin"
 
 # ASCII Art
 print_ascii_art() {
@@ -149,12 +150,11 @@ User=$SUDO_USER
 Group=$SUDO_USER
 Environment=NODE_ENV=production
 Environment=HOME=/home/$SUDO_USER
-Environment=NVM_DIR=/home/$SUDO_USER/.nvm
+Environment=PATH=${NODE_PATH}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 WorkingDirectory=$app_dir
 
-# Source NVM and start the application
 ExecStartPre=/bin/sleep $DELAY_SECONDS
-ExecStart=/bin/bash -c 'source /home/$SUDO_USER/.nvm/nvm.sh && npm run start'
+ExecStart=${NODE_PATH}/npm run start
 Restart=always
 RestartSec=10
 
