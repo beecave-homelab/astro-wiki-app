@@ -105,6 +105,17 @@ setup_service() {
         systemctl disable "$SERVICE_NAME"
     fi
 
+    # Clean up existing logs
+    echo "Cleaning up existing logs..."
+    if [[ -f "$LOG_FILE" ]]; then
+        echo "Removing old log file..."
+        rm -f "$LOG_FILE"
+    fi
+    
+    # Clean up journal logs for the service
+    echo "Cleaning up systemd journal logs..."
+    journalctl --vacuum-time=1s -u "$SERVICE_NAME" 2>/dev/null || true
+
     # Create log directory and file with proper permissions
     local log_dir="$(dirname "$LOG_FILE")"
     if [[ ! -d "$log_dir" ]]; then
@@ -114,17 +125,10 @@ setup_service() {
         chmod 755 "$log_dir"
     fi
 
-    if [[ ! -f "$LOG_FILE" ]]; then
-        echo "Creating log file: $LOG_FILE"
-        touch "$LOG_FILE" || error_exit "Failed to create log file"
-        chown "$SUDO_USER:$SUDO_USER" "$LOG_FILE"
-        chmod 644 "$LOG_FILE"
-    fi
-
-    # Verify log file is writable
-    if ! touch "$LOG_FILE" 2>/dev/null; then
-        error_exit "Log file is not writable: $LOG_FILE"
-    fi
+    echo "Creating fresh log file: $LOG_FILE"
+    touch "$LOG_FILE" || error_exit "Failed to create log file"
+    chown "$SUDO_USER:$SUDO_USER" "$LOG_FILE"
+    chmod 644 "$LOG_FILE"
 
     # Remove existing service file if present
     if [[ -f "$SERVICE_FILE" ]]; then
@@ -144,9 +148,13 @@ Type=simple
 User=$SUDO_USER
 Group=$SUDO_USER
 Environment=NODE_ENV=production
+Environment=HOME=/home/$SUDO_USER
+Environment=NVM_DIR=/home/$SUDO_USER/.nvm
 WorkingDirectory=$app_dir
+
+# Source NVM and start the application
 ExecStartPre=/bin/sleep $DELAY_SECONDS
-ExecStart=/usr/bin/npm run start
+ExecStart=/bin/bash -c 'source /home/$SUDO_USER/.nvm/nvm.sh && npm run start'
 Restart=always
 RestartSec=10
 
