@@ -134,3 +134,6 @@ dist
 
 # MacOS
 .DS_Store
+
+# Articles
+src/content/docs/*.md
