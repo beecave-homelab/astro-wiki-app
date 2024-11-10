@@ -1,0 +1,29 @@
+---
+const { currentPath } = Astro.props;
+
+const docs = await Astro.glob('../content/docs/*.md');
+const sortedDocs = docs.sort((a, b) => {
+  return (a.frontmatter.order || 0) - (b.frontmatter.order || 0);
+});
+---
+
+<aside class="w-64 fixed left-0 top-16 h-[calc(100vh-4rem)] overflow-y-auto border-r border-dark-300 p-4 bg-dark-200">
+  <nav>
+    <ul class="space-y-2">
+      {sortedDocs.map((doc) => (
+        <li>
+          <a
+            href={`/docs/${doc.file.split('/').pop()?.replace('.md', '')}`}
+            class={`block px-4 py-2 rounded-lg ${
+              currentPath === doc.url
+                ? 'bg-dark-400 text-blue-400'
+                : 'text-gray-300 hover:bg-dark-300'
+            }`}
+          >
+            {doc.frontmatter.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>

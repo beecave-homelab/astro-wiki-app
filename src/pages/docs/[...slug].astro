@@ -1,0 +1,20 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await Astro.glob('../../content/docs/*.md');
+  return docs.map(doc => ({
+    params: {
+      slug: doc.file.split('/').pop()?.replace('.md', '')
+    },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content, frontmatter } = doc;
+---
+
+<DocsLayout frontmatter={frontmatter}>
+  <Content />
+</DocsLayout>
