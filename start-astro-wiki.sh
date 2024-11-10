@@ -9,8 +9,8 @@ set -euo pipefail
 # Usage: ./start-astro-wiki.sh [OPTIONS]
 
 # Constants
-APP_DIR="/path/to/astro-wiki-app"
-LOG_FILE="/var/log/astro-wiki.log"
+APP_DIR="${PWD}"
+LOG_FILE="${PWD}/log/astro-wiki.log"
 DELAY_SECONDS=20
 
 # ASCII Art
