@@ -94,6 +94,17 @@ setup_service() {
         error_exit "Setup requires root privileges. Please run with sudo."
     fi
 
+    # Check for existing service and stop it
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+        echo "Stopping existing $SERVICE_NAME service..."
+        systemctl stop "$SERVICE_NAME"
+    fi
+
+    if systemctl is-enabled --quiet "$SERVICE_NAME"; then
+        echo "Disabling existing $SERVICE_NAME service..."
+        systemctl disable "$SERVICE_NAME"
+    fi
+
     # Create log directory and file with proper permissions
     local log_dir="$(dirname "$LOG_FILE")"
     if [[ ! -d "$log_dir" ]]; then
@@ -113,6 +124,12 @@ setup_service() {
     # Verify log file is writable
     if ! touch "$LOG_FILE" 2>/dev/null; then
         error_exit "Log file is not writable: $LOG_FILE"
+    fi
+
+    # Remove existing service file if present
+    if [[ -f "$SERVICE_FILE" ]]; then
+        echo "Removing existing service file..."
+        rm -f "$SERVICE_FILE"
     fi
 
     echo "Setting up systemd service..."
