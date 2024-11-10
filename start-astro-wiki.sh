@@ -88,13 +88,35 @@ main_logic() {
 
 # Function to setup systemd service
 setup_service() {
-  local app_dir="$1"
-  
-  if [[ $EUID -ne 0 ]]; then
-    error_exit "Setup requires root privileges. Please run with sudo."
-  fi
+    local app_dir="$1"
+    
+    if [[ $EUID -ne 0 ]]; then
+        error_exit "Setup requires root privileges. Please run with sudo."
+    fi
 
-  cat > "$SERVICE_FILE" << EOL
+    # Create log directory and file with proper permissions
+    local log_dir="$(dirname "$LOG_FILE")"
+    if [[ ! -d "$log_dir" ]]; then
+        echo "Creating log directory: $log_dir"
+        mkdir -p "$log_dir" || error_exit "Failed to create log directory"
+        chown "$SUDO_USER:$SUDO_USER" "$log_dir"
+        chmod 755 "$log_dir"
+    fi
+
+    if [[ ! -f "$LOG_FILE" ]]; then
+        echo "Creating log file: $LOG_FILE"
+        touch "$LOG_FILE" || error_exit "Failed to create log file"
+        chown "$SUDO_USER:$SUDO_USER" "$LOG_FILE"
+        chmod 644 "$LOG_FILE"
+    fi
+
+    # Verify log file is writable
+    if ! touch "$LOG_FILE" 2>/dev/null; then
+        error_exit "Log file is not writable: $LOG_FILE"
+    fi
+
+    echo "Setting up systemd service..."
+    cat > "$SERVICE_FILE" << EOL
 [Unit]
 Description=Astro Wiki App
 After=network.target
@@ -103,14 +125,17 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=$SUDO_USER
+Group=$SUDO_USER
 Environment=NODE_ENV=production
+WorkingDirectory=$app_dir
 ExecStartPre=/bin/sleep $DELAY_SECONDS
-ExecStart=$(which bash) $app_dir/start-astro-wiki.sh
+ExecStart=/usr/bin/npm run start
 Restart=always
 RestartSec=10
-WorkingDirectory=$app_dir
-StandardOutput=append:${LOG_FILE}
-StandardError=append:${LOG_FILE}
+
+# Logging
+StandardOutput=append:$LOG_FILE
+StandardError=append:$LOG_FILE
 
 # Security settings
 ProtectSystem=full
@@ -122,12 +147,20 @@ PrivateTmp=true
 WantedBy=multi-user.target
 EOL
 
-  systemctl daemon-reload
-  systemctl enable "$SERVICE_NAME"
-  systemctl start "$SERVICE_NAME"
-  
-  echo "Systemd service installed and started successfully"
-  echo "Check status with: systemctl status $SERVICE_NAME"
+    # Set proper permissions for service file
+    chmod 644 "$SERVICE_FILE"
+
+    echo "Reloading systemd daemon..."
+    systemctl daemon-reload
+
+    echo "Enabling and starting service..."
+    systemctl enable "$SERVICE_NAME"
+    systemctl start "$SERVICE_NAME"
+    
+    echo "Systemd service installed and started successfully"
+    echo "Check status with: systemctl status $SERVICE_NAME"
+    echo "View logs with: journalctl -u $SERVICE_NAME"
+    echo "Log file location: $LOG_FILE"
 }
 
 # Main function
