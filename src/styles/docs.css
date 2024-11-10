@@ -1,0 +1,61 @@
+/* Add custom styles for documentation */
+.prose pre {
+  background-color: #000 !important;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.prose code {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.875em;
+  color: #fff;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.prose a {
+  text-decoration: none;
+  color: #60a5fa;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.dark .prose {
+  color: #e5e7eb;
+}
+
+.dark .prose h1,
+.dark .prose h2,
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+  color: #fff;
+}
+
+.dark .prose strong {
+  color: #fff;
+}
+
+/* Style for anchor links */
+.heading-anchor {
+  margin-left: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 0.8em;
+  vertical-align: middle;
+  color: #60a5fa;
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover .heading-anchor {
+  opacity: 1;
+}

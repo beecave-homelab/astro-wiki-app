@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Define a simple stripMarkdown function
+function stripMarkdown(text) {
+  return text.replace(/[#_*~`>]/g, '').split('\n')[0];
+}
+
+const docs = await Astro.glob('../content/docs/*.md');
+const docsList = docs.map(doc => {
+  const slug = doc.file.split('/').pop().replace('.md', '');
+  const content = doc.rawContent() || '';
+  const lines = content.split('\n');
+  let description = '';
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line && !line.startsWith('#')) {
+      description = stripMarkdown(line);
+      break;
+    }
+  }
+
+  return {
+    title: doc.frontmatter.title,
+    slug,
+    description
+  };
+});
+---
+
+<Layout title="Articles about AI">
+  <main class="min-h-screen bg-dark-100">
+    <div class="container mx-auto px-4 py-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {docsList.map(doc => (
+          <a
+            href={`/docs/${doc.slug}`}
+            class="block bg-dark-200 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:bg-dark-300"
+          >
+            <h2 class="text-xl font-semibold text-white mb-2">
+              {doc.title}
+            </h2>
+            <p class="text-gray-400">
+              {doc.description}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
