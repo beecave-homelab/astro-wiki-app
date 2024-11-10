@@ -57,13 +57,13 @@ main_logic() {
   local app_dir="$1"
   local log_file="$2"
 
-  # Check dependencies
-  if ! command -v npm &> /dev/null; then
-    error_exit "npm is not installed"
+  # Check dependencies using full paths
+  if [[ ! -f "${NODE_PATH}/npm" ]]; then
+    error_exit "npm is not installed at expected path: ${NODE_PATH}/npm"
   fi
 
-  if ! command -v node &> /dev/null; then
-    error_exit "node is not installed"
+  if [[ ! -f "${NODE_PATH}/node" ]]; then
+    error_exit "node is not installed at expected path: ${NODE_PATH}/node"
   fi
 
   log_message "Starting Astro Wiki App..." "$log_file"
@@ -81,8 +81,8 @@ main_logic() {
   fi
 
   log_message "Starting application..." "$log_file"
-  npm run build >> "$log_file" 2>&1 || error_exit "Build failed"
-  npm run start >> "$log_file" 2>&1 &
+  "${NODE_PATH}/npm" run build >> "$log_file" 2>&1 || error_exit "Build failed"
+  "${NODE_PATH}/npm" run start >> "$log_file" 2>&1 &
 
   log_message "Astro Wiki App started successfully" "$log_file"
 }
