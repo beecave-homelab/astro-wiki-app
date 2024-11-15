@@ -137,3 +137,6 @@ dist
 
 # Articles
 src/content/docs/*.md
+
+# Images
+src/content/images/*
