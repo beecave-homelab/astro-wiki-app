@@ -11,7 +11,9 @@ const { frontmatter, url } = Astro.props;
   <div class="min-h-screen bg-dark-100 text-white">
     <header class="fixed top-0 z-40 w-full h-16 bg-dark-200 border-b border-dark-300">
       <div class="container mx-auto px-4 h-full flex items-center justify-between">
-        <a href="/" class="text-2xl font-bold text-white">Docs</a>
+        <a href="/" class="text-2xl font-bold text-white" aria-label="Home">
+          <h1>Docs</h1>
+        </a>
       </div>
     </header>
 
@@ -33,7 +35,7 @@ const { frontmatter, url } = Astro.props;
   /* Base styles for markdown content */
   .prose {
     color: #e5e7eb;
-    max-width: 65ch;
+    max-width: 90%;
   }
 
   .prose h1 {
