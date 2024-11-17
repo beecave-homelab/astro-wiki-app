@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
 
 let docsList = [];
 try {
@@ -10,7 +11,6 @@ try {
     description: doc.frontmatter.description || 'No description available'
   }));
 } catch (error) {
-  // If no files are found, docsList remains empty
   console.log('No documents or articles found');
 }
 ---
@@ -21,17 +21,11 @@ try {
       {docsList.length > 0 ? (
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {docsList.map(doc => (
-            <a
+            <Card
               href={`/docs/${doc.slug}`}
-              class="block bg-dark-200 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 hover:bg-dark-300"
-            >
-              <h2 class="text-xl font-semibold text-white mb-2">
-                {doc.title}
-              </h2>
-              <p class="text-gray-400">
-                {doc.description}
-              </p>
-            </a>
+              title={doc.title}
+              description={doc.description}
+            />
           ))}
         </div>
       ) : (
