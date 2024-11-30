@@ -4,7 +4,7 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
 
 ![GitHub](https://img.shields.io/badge/framework-Astro-orange)
 ![GitHub](https://img.shields.io/badge/runtime-Node.js-green)
-![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Version](https://img.shields.io/badge/version-0.2.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
 ## Table of Contents
