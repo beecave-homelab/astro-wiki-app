@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { AuthService } from '../../lib/auth';
+
+// Check authentication
+const token = Astro.cookies.get('session')?.value;
+if (!token || !AuthService.verifyToken(token)) {
+    return Astro.redirect('/login');
+}
+
+// Get user data from token
+const userData = AuthService.verifyToken(token);
+const username = userData?.username || 'User';
+
+// Handle logout
+if (Astro.request.method === 'POST') {
+    const formData = await Astro.request.formData();
+    if (formData.get('action') === 'logout') {
+        Astro.cookies.delete('session');
+        return Astro.redirect('/login');
+    }
+}
+---
+
+<Layout title="Backend Dashboard - Astro Wiki">
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold">Backend Dashboard</h1>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-600">Welcome, {username}!</span>
+                <form method="POST" class="inline">
+                    <input type="hidden" name="action" value="logout" />
+                    <button 
+                        type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Quick Stats</h2>
+                <p class="text-gray-600">Welcome to your dashboard! You can add widgets and functionality here.</p>
+            </div>
+        </div>
+    </main>
+</Layout>
