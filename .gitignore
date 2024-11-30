@@ -145,3 +145,5 @@ src/content/images/*
 docs/create-coding-project-astro-wiki-app.md
 
 src/db/create-admin.ts
+tests/api-test.ts
+tests/test.ts
