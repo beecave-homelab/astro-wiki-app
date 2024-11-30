@@ -1,9 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
+
 const { currentPath } = Astro.props;
 
-const docs = await Astro.glob('../content/docs/*.md');
+const docs = await getCollection('docs');
 const sortedDocs = docs.sort((a, b) => {
-  return (a.frontmatter.order || 0) - (b.frontmatter.order || 0);
+  // Sort by title if no order is specified
+  return a.data.title.localeCompare(b.data.title);
 });
 ---
 
@@ -13,14 +16,14 @@ const sortedDocs = docs.sort((a, b) => {
       {sortedDocs.map((doc) => (
         <li>
           <a
-            href={`/docs/${doc.file.split('/').pop()?.replace('.md', '')}`}
+            href={`/docs/${doc.slug}`}
             class={`block px-4 py-2 rounded-lg ${
-              currentPath === doc.url
+              currentPath === `/docs/${doc.slug}`
                 ? 'bg-dark-400 text-blue-400'
                 : 'text-gray-300 hover:bg-dark-300'
             }`}
           >
-            {doc.frontmatter.title}
+            {doc.data.title}
           </a>
         </li>
       ))}
