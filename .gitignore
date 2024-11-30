@@ -141,4 +141,6 @@ src/content/docs/*.md
 # Images
 src/content/images/*
 
-create-coding-project-astro-wiki-app.md
+# Docs
+docs/create-coding-project-astro-wiki-app.md
+
