@@ -8,20 +8,35 @@
     "start": "astro dev --host 0.0.0.0 --port 4321",
     "build": "astro build",
     "preview": "astro preview --host 0.0.0.0 --port 4321",
-    "astro": "astro"
+    "astro": "astro",
+    "db:init": "tsx src/db/init.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:test": "tsx src/db/test.ts",
+    "test:api": "tsx src/tests/api-test.ts",
+    "create:admin": "tsx src/db/create-admin.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^2.1.1",
+    "@astrojs/react": "^3.6.3",
     "@astrojs/tailwind": "^5.1.0",
     "@tailwindcss/typography": "^0.5.10",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.7",
     "astro": "^4.15.3",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
     "express-rate-limit": "^7.4.1",
     "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.12",
+    "node-fetch": "^3.3.2"
   }
 }
