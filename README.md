@@ -15,9 +15,10 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
 - [Article Creation](#article-creation)
 - [Features](#features)
 - [Project Structure](#project-structure)
+- [Database Setup](#database-setup)
+- [Authentication Setup](#authentication-setup)
 - [License](#license)
 - [Contributing](#contributing)
-- [Authentication Setup](#authentication-setup)
 
 ## Badges
 
@@ -120,41 +121,78 @@ npm run build
 └── astro.config.mjs   # Astro configuration
 ```
 
+## Database Setup
+
+The application uses MariaDB as its database. To set up the database:
+
+1. Install MariaDB on your system:
+
+    ```bash
+    # macOS (using Homebrew)
+    brew install mariadb
+
+    # Start MariaDB service
+    brew services start mariadb
+    ```
+
+2. Create a new database and user:
+
+    ```sql
+    mysql -u root -p
+
+    CREATE DATABASE astro_wiki;
+    CREATE USER 'admin'@'localhost' IDENTIFIED BY 'your_password';
+    GRANT ALL PRIVILEGES ON astro_wiki.* TO 'admin'@'localhost';
+    FLUSH PRIVILEGES;
+    ```
+
+3. Configure the database connection:
+
+    ```bash
+    # Copy the example environment file
+    cp .env.example .env
+
+    # Update the database configuration in .env
+    DB_HOST=localhost
+    DB_USER=admin
+    DB_PASSWORD=your_password
+    DB_NAME=astro_wiki
+    ```
+
 ## Authentication Setup
 
 The application uses JWT (JSON Web Token) based authentication with secure cookie sessions. To set up authentication:
 
-1. Copy the example environment file:
-```bash
-cp .env.example .env
-```
+1. Copy the example environment file (if you haven't already):
+
+    ```bash
+    cp .env.example .env
+    ```
 
 2. Open the `.env` file and update the environment variables:
-```env
-# Authentication
-JWT_SECRET=your-secure-secret-here
 
-# Cookie Settings
-COOKIE_SECURE=true
-COOKIE_SAME_SITE=lax
-```
+    ```env
+    # Authentication
+    JWT_SECRET=your-secure-secret-here
+
+    # Cookie Settings
+    COOKIE_SECURE=true
+    COOKIE_SAME_SITE=lax
+
+    # Database Configuration
+    DB_HOST=localhost
+    DB_USER=admin
+    DB_PASSWORD=password
+    DB_NAME=astro_wiki
+    ```
 
 3. Generate a secure JWT secret using Node.js:
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
+
+    ```bash
+    node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+    ```
 
 4. Copy the generated string and use it as your `JWT_SECRET` in the `.env` file.
-
-### Default Credentials
-For development, you can use these credentials:
-- Username: `admin`
-- Password: `admin123`
-
-> ⚠️ **Security Note**: Make sure to:
-> - Never commit the `.env` file to version control
-> - Use different JWT secrets in development and production
-> - Change the default credentials in production
 
 ## License
 
