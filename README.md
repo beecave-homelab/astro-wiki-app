@@ -2,32 +2,37 @@
 
 A simple NodeJS and Astro-powered wiki website designed to host markdown files as articles.
 
-## Versions
-
-**Current version**: 0.1.0 - Initial development release
-
-## Table of Contents
-
-- [Versions](#versions)
-- [Badges](#badges)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Article Creation](#article-creation)
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Database Setup](#database-setup)
-- [Authentication Setup](#authentication-setup)
-- [License](#license)
-- [Contributing](#contributing)
-
-## Badges
-
 ![GitHub](https://img.shields.io/badge/framework-Astro-orange)
 ![GitHub](https://img.shields.io/badge/runtime-Node.js-green)
 ![Version](https://img.shields.io/badge/version-0.1.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
-## Installation
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+  - [Installation](#installation)
+  - [Database Setup](#database-setup)
+  - [Authentication Setup](#authentication-setup)
+- [Usage](#usage)
+  - [Article Creation](#article-creation)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Versions](#versions)
+- [Security Notes](#security-notes)
+- [License](#license)
+- [Contributing](#contributing)
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+- MariaDB (v10.6 or higher)
+
+## Setup
+
+### Installation
 
 1. Clone the repository:
 
@@ -47,6 +52,79 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
     npm install
     ```
 
+### Database Setup
+
+The application uses MariaDB as its database. To set up the database:
+
+1. Install MariaDB on your system:
+
+    ```bash
+    # macOS (using Homebrew)
+    brew install mariadb
+
+    # Start MariaDB service
+    brew services start mariadb
+    ```
+
+2. Create a new database and user:
+
+    ```sql
+    mysql -u root -p
+
+    CREATE DATABASE astro_wiki;
+    CREATE USER 'admin'@'localhost' IDENTIFIED BY 'your_password';
+    GRANT ALL PRIVILEGES ON astro_wiki.* TO 'admin'@'localhost';
+    FLUSH PRIVILEGES;
+    ```
+
+3. Configure the database connection:
+
+    ```bash
+    # Copy the example environment file
+    cp .env.example .env
+
+    # Update the database configuration in .env
+    DB_HOST=localhost
+    DB_USER=admin
+    DB_PASSWORD=your_password
+    DB_NAME=astro_wiki
+    ```
+
+### Authentication Setup
+
+The application uses JWT (JSON Web Token) based authentication with secure cookie sessions. To set up authentication:
+
+1. Copy the example environment file (if you haven't already):
+
+    ```bash
+    cp .env.example .env
+    ```
+
+2. Open the `.env` file and update the environment variables:
+
+    ```env
+    # Authentication
+    JWT_SECRET=your-secure-secret-here
+
+    # Cookie Settings
+    COOKIE_SECURE=true
+    COOKIE_SAME_SITE=lax
+
+    # Database Configuration
+    DB_HOST=localhost
+    DB_USER=admin
+    DB_PASSWORD=password
+    DB_NAME=astro_wiki
+    ```
+
+3. Generate a secure JWT secret using Node.js:
+
+    ```bash
+    node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+    ```
+
+4. Copy the generated string and use it as your `JWT_SECRET` in the `.env` file.
+
 ## Usage
 
 1. Start the development server:
@@ -57,11 +135,11 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
 
 2. Build for production:
 
-```bash
-npm run build
-```
+    ```bash
+    npm run build
+    ```
 
-## Article Creation
+### Article Creation
 
 1. Place your Markdown files in the `src/content/docs/` directory
 
@@ -112,87 +190,36 @@ npm run build
 ```markdown
 .
 ├── src/
-│   ├── components/    # Reusable UI components
-│   ├── content/       # Wiki articles (Markdown)
-│   │   └── docs/      # All documentation articles
-│   ├── layouts/       # Page layouts
-│   └── pages/         # Route components
-├── public/            # Static assets
-└── astro.config.mjs   # Astro configuration
+│   ├── components/  # UI components
+│   ├── content/     # Wiki articles (Markdown)
+│   │   └── docs/    # Documentation articles
+│   ├── db/          # Database models and migrations
+│   ├── layouts/     # Page layouts and templates
+│   ├── lib/         # Shared utilities and helpers
+│   ├── middleware/  # Request middleware
+│   ├── pages/       # Route components and API endpoints
+│   └── styles/      # CSS and styling files
+├── public/          # Static assets
+├── scripts/         # Build and utility scripts
+├── tests/           # Test files
+├── .env.example     # Example environment configuration
+├── astro.config.mjs # Astro configuration
+├── tailwind.config.mjs # Tailwind CSS configuration
+├── tsconfig.json    # TypeScript configuration
+└── package.json     # Project dependencies and scripts
 ```
 
-## Database Setup
+## Versions
 
-The application uses MariaDB as its database. To set up the database:
+**Current version**: 0.2.0 - Second development release
 
-1. Install MariaDB on your system:
+## Security Notes
 
-    ```bash
-    # macOS (using Homebrew)
-    brew install mariadb
-
-    # Start MariaDB service
-    brew services start mariadb
-    ```
-
-2. Create a new database and user:
-
-    ```sql
-    mysql -u root -p
-
-    CREATE DATABASE astro_wiki;
-    CREATE USER 'admin'@'localhost' IDENTIFIED BY 'your_password';
-    GRANT ALL PRIVILEGES ON astro_wiki.* TO 'admin'@'localhost';
-    FLUSH PRIVILEGES;
-    ```
-
-3. Configure the database connection:
-
-    ```bash
-    # Copy the example environment file
-    cp .env.example .env
-
-    # Update the database configuration in .env
-    DB_HOST=localhost
-    DB_USER=admin
-    DB_PASSWORD=your_password
-    DB_NAME=astro_wiki
-    ```
-
-## Authentication Setup
-
-The application uses JWT (JSON Web Token) based authentication with secure cookie sessions. To set up authentication:
-
-1. Copy the example environment file (if you haven't already):
-
-    ```bash
-    cp .env.example .env
-    ```
-
-2. Open the `.env` file and update the environment variables:
-
-    ```env
-    # Authentication
-    JWT_SECRET=your-secure-secret-here
-
-    # Cookie Settings
-    COOKIE_SECURE=true
-    COOKIE_SAME_SITE=lax
-
-    # Database Configuration
-    DB_HOST=localhost
-    DB_USER=admin
-    DB_PASSWORD=password
-    DB_NAME=astro_wiki
-    ```
-
-3. Generate a secure JWT secret using Node.js:
-
-    ```bash
-    node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-    ```
-
-4. Copy the generated string and use it as your `JWT_SECRET` in the `.env` file.
+- Never commit the `.env` file to version control
+- Use different JWT secrets in development and production
+- Ensure your MariaDB installation is properly secured
+- Set strong passwords for both database and admin users
+- In production, always use HTTPS and set `COOKIE_SECURE=true`
 
 ## License
 
