@@ -17,6 +17,7 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
 - [Project Structure](#project-structure)
 - [License](#license)
 - [Contributing](#contributing)
+- [Authentication Setup](#authentication-setup)
 
 ## Badges
 
@@ -118,6 +119,42 @@ npm run build
 ├── public/            # Static assets
 └── astro.config.mjs   # Astro configuration
 ```
+
+## Authentication Setup
+
+The application uses JWT (JSON Web Token) based authentication with secure cookie sessions. To set up authentication:
+
+1. Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+2. Open the `.env` file and update the environment variables:
+```env
+# Authentication
+JWT_SECRET=your-secure-secret-here
+
+# Cookie Settings
+COOKIE_SECURE=true
+COOKIE_SAME_SITE=lax
+```
+
+3. Generate a secure JWT secret using Node.js:
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
+
+4. Copy the generated string and use it as your `JWT_SECRET` in the `.env` file.
+
+### Default Credentials
+For development, you can use these credentials:
+- Username: `admin`
+- Password: `admin123`
+
+> ⚠️ **Security Note**: Make sure to:
+> - Never commit the `.env` file to version control
+> - Use different JWT secrets in development and production
+> - Change the default credentials in production
 
 ## License
 
