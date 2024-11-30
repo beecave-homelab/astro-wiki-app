@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Profile from '../components/auth/Profile';
+---
+
+<Layout title="Profile - Astro Wiki">
+    <main class="min-h-screen bg-gray-100 py-8">
+        <Profile client:load />
+    </main>
+</Layout>
+
+<style>
+    /* Add any additional styles here */
+</style>

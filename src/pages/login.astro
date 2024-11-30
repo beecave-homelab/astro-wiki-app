@@ -1,9 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { loginLimiter } from '../middleware/auth';
-import { AuthService } from '../lib/auth';
-
-let error = '';
+import AuthForm from '../components/auth/AuthForm';
 
 // Handle form submission
 if (Astro.request.method === 'POST') {
@@ -50,46 +47,7 @@ if (token && AuthService.verifyToken(token)) {
 
 <Layout title="Login - Astro Wiki">
     <main class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="bg-white p-8 rounded-lg shadow-md w-96">
-            <h1 class="text-2xl font-bold mb-6 text-center">Login</h1>
-            
-            {error && (
-                <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-                    {error}
-                </div>
-            )}
-            
-            <form method="POST" action="/login" enctype="application/x-www-form-urlencoded" class="space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Sign in
-                </button>
-            </form>
-        </div>
+        <AuthForm client:load type="login" />
     </main>
 </Layout>
 

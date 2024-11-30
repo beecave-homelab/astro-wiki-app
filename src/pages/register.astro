@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AuthForm from '../components/auth/AuthForm';
+---
+
+<Layout title="Register - Astro Wiki">
+    <main class="min-h-screen flex items-center justify-center bg-gray-100">
+        <AuthForm client:load type="register" />
+    </main>
+</Layout>
+
+<style>
+    /* Add any additional styles here */
+</style>

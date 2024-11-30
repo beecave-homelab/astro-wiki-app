@@ -1,18 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
+import { getCollection } from 'astro:content';
 
-let docsList = [];
-try {
-  const docs = await Astro.glob('../content/docs/*.md');
-  docsList = docs.map(doc => ({
-    slug: doc.file.split('/').pop()?.replace('.md', ''),
-    title: doc.frontmatter.title || 'Untitled',
-    description: doc.frontmatter.description || 'No description available'
-  }));
-} catch (error) {
-  console.log('No documents or articles found');
-}
+const docs = await getCollection('docs');
+const docsList = docs.map(doc => ({
+  slug: doc.slug,
+  title: doc.data.title,
+  description: doc.data.description
+}));
+
 ---
 
 <Layout title="Articles about AI">
@@ -29,10 +26,7 @@ try {
           ))}
         </div>
       ) : (
-        <div class="text-center text-gray-400">
-          <h2 class="text-2xl font-semibold mb-4">No Articles Found</h2>
-          <p>Add markdown files to the src/content/docs directory to get started.</p>
-        </div>
+        <p>No documents found.</p>
       )}
     </div>
   </main>
