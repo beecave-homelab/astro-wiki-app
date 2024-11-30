@@ -144,3 +144,4 @@ src/content/images/*
 # Docs
 docs/create-coding-project-astro-wiki-app.md
 
+src/db/create-admin.ts
