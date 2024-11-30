@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 export default defineConfig({
+  output: 'server', // Enable server-side rendering
   server: {
     host: '0.0.0.0',
     port: 4321
