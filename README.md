@@ -9,6 +9,7 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
 
 ## Table of Contents
 
+- [Features](#features)
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
   - [Installation](#installation)
@@ -16,12 +17,21 @@ A simple NodeJS and Astro-powered wiki website designed to host markdown files a
   - [Authentication Setup](#authentication-setup)
 - [Usage](#usage)
   - [Article Creation](#article-creation)
-- [Features](#features)
 - [Project Structure](#project-structure)
 - [Versions](#versions)
 - [Security Notes](#security-notes)
 - [License](#license)
 - [Contributing](#contributing)
+
+## Features
+
+- 📝 Markdown file support
+- ⚡ Fast page transitions
+- 🎨 Clean and simple interface
+- 🔍 Automatic article indexing
+- 🏷️ Article tagging support
+- 🚀 Built with Astro
+- 📱 Responsive design
 
 ## Prerequisites
 
@@ -174,16 +184,6 @@ The application uses JWT (JSON Web Token) based authentication with secure cooki
 
     Rest of your article content...
     ```
-
-## Features
-
-- 📝 Markdown file support
-- ⚡ Fast page transitions
-- 🎨 Clean and simple interface
-- 🔍 Automatic article indexing
-- 🏷️ Article tagging support
-- 🚀 Built with Astro
-- 📱 Responsive design
 
 ## Project Structure
 
