@@ -113,6 +113,12 @@ export default function Profile() {
               Edit Profile
             </button>
             <a
+              href="/docs/upload"
+              className="block bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full"
+            >
+              Upload Document
+            </a>
+            <a
               href="/change-password"
               className="block bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full"
             >
