@@ -14,7 +14,7 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
     const token = context.cookies.get('session')?.value;
     
     // Protected routes that require authentication
-    const protectedRoutes = ['/backend'];
+    const protectedRoutes = ['/backend', '/change-password'];
     const isProtectedRoute = protectedRoutes.some(route => 
         context.url.pathname.startsWith(route)
     );
