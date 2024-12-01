@@ -143,6 +143,7 @@ src/content/images/*
 
 # Docs
 docs/create-coding-project-astro-wiki-app.md
+docs/How to read complex code.md
 
 src/db/create-admin.ts
 tests/api-test.ts
