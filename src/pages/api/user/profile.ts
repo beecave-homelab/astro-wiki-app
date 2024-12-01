@@ -1,28 +1,13 @@
 import type { APIRoute } from 'astro';
 import { getUserByEmail, updateUser } from '../../../lib/user';
 import { jsonResponse, errorResponse, validateUsername } from '../../../lib/api';
-import jwt from 'jsonwebtoken';
-
-// Helper function to verify JWT token
-function verifyToken(token: string): any {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-  } catch {
-    return null;
-  }
-}
+import { verifyAuthToken } from '../../../lib/auth';
 
 export const GET: APIRoute = async ({ request }) => {
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return errorResponse('Unauthorized', 401);
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
+    const decoded = verifyAuthToken(request);
     if (!decoded) {
-      return errorResponse('Invalid token', 401);
+      return errorResponse('Unauthorized', 401);
     }
 
     const user = await getUserByEmail(decoded.email);
@@ -45,21 +30,19 @@ export const GET: APIRoute = async ({ request }) => {
 
 export const PUT: APIRoute = async ({ request }) => {
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return errorResponse('Unauthorized', 401);
-    }
-
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyToken(token);
+    const decoded = verifyAuthToken(request);
     if (!decoded) {
-      return errorResponse('Invalid token', 401);
+      return errorResponse('Unauthorized', 401);
     }
 
     const body = await request.json();
     const { username } = body;
 
-    if (username && !validateUsername(username)) {
+    if (!username) {
+      return errorResponse('Username is required');
+    }
+
+    if (!validateUsername(username)) {
       return errorResponse('Invalid username format');
     }
 
@@ -68,18 +51,17 @@ export const PUT: APIRoute = async ({ request }) => {
       return errorResponse('User not found', 404);
     }
 
-    const success = await updateUser(user.id!, { username });
-    if (!success) {
-      return errorResponse('Failed to update profile', 500);
+    const updated = await updateUser(user.id, { username });
+    if (!updated) {
+      return errorResponse('Failed to update profile');
     }
 
-    const updatedUser = await getUserByEmail(decoded.email);
     return jsonResponse({
-      id: updatedUser!.id,
-      username: updatedUser!.username,
-      email: updatedUser!.email,
-      created_at: updatedUser!.created_at,
-      updated_at: updatedUser!.updated_at
+      id: updated.id,
+      username: updated.username,
+      email: updated.email,
+      created_at: updated.created_at,
+      updated_at: updated.updated_at
     });
   } catch (error) {
     console.error('Profile update error:', error);
