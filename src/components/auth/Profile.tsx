@@ -53,95 +53,80 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-md mx-auto p-6 dark:bg-dark-300 rounded-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Profile</h2>
+        <h2 className="text-2xl font-bold dark:text-white">Profile</h2>
         <button
           onClick={logout}
-          className="px-4 py-2 text-sm text-white bg-gray-600 rounded hover:bg-gray-700"
+          className="px-4 py-2 bg-dark-400 text-white rounded-md hover:bg-dark-500 transition-colors"
         >
           Logout
         </button>
       </div>
-
-      {error && (
-        <div className="mb-4 text-red-600 text-sm">{error}</div>
-      )}
-
-      {success && (
-        <div className="mb-4 text-green-600 text-sm">{success}</div>
-      )}
-
-      <div className="space-y-4">
-        {editing ? (
-          <form onSubmit={handleUpdate} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Username</label>
-              <input
-                type="text"
-                value={newUsername}
-                onChange={(e) => setNewUsername(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                required
-              />
-            </div>
-
-            <div className="flex space-x-4">
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm text-white bg-indigo-600 rounded hover:bg-indigo-700"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setEditing(false);
-                  setNewUsername(user.username);
-                }}
-                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Username</label>
-              <div className="mt-1 text-gray-900">{user.username}</div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <div className="mt-1 text-gray-900">{user.email}</div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Member Since</label>
-              <div className="mt-1 text-gray-900">
-                {new Date(user.created_at).toLocaleDateString()}
-              </div>
-            </div>
-
+      
+      {error && <div className="text-red-500 mb-4 dark:text-red-400">{error}</div>}
+      {success && <div className="text-green-500 mb-4 dark:text-green-400">{success}</div>}
+      
+      {editing ? (
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium mb-1 dark:text-gray-200">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              className="w-full px-3 py-2 border rounded-md dark:bg-dark-400 dark:text-white dark:border-dark-500"
+            />
+          </div>
+          <div className="flex space-x-4">
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(false);
+                setNewUsername(user.username);
+              }}
+              className="bg-dark-400 text-white px-4 py-2 rounded-md hover:bg-dark-500 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm font-medium dark:text-gray-400">Username</p>
+            <p className="mt-1 dark:text-white">{user.username}</p>
+          </div>
+          <div>
+            <p className="text-sm font-medium dark:text-gray-400">Email</p>
+            <p className="mt-1 dark:text-white">{user.email}</p>
+          </div>
+          <div className="space-y-2">
             <button
               onClick={() => setEditing(true)}
-              className="px-4 py-2 text-sm text-white bg-indigo-600 rounded hover:bg-indigo-700"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full"
             >
               Edit Profile
             </button>
+            <a
+              href="/change-password"
+              className="block bg-green-600 text-white text-center px-4 py-2 rounded-md hover:bg-green-700 transition-colors w-full"
+            >
+              Change Password
+            </a>
+            <button
+              onClick={handleDelete}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors w-full"
+            >
+              Delete Account
+            </button>
           </div>
-        )}
-
-        <div className="pt-6 mt-6 border-t border-gray-200">
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-700"
-          >
-            Delete Account
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }
