@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { verifyUser } from '../../../lib/user';
-import { jsonResponse, errorResponse } from '../../../lib/api';
+import { errorResponse } from '../../../lib/api';
 import jwt from 'jsonwebtoken';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -29,14 +29,32 @@ export const POST: APIRoute = async ({ request }) => {
       { expiresIn: '24h' }
     );
 
-    return jsonResponse({
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email
+    // Create response with token in both body and cookie
+    const response = new Response(
+      JSON.stringify({
+        success: true,
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
+      }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
-    });
+    );
+
+    // Set secure cookie with the token
+    response.headers.append(
+      'Set-Cookie',
+      `auth_token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`
+    );
+
+    return response;
   } catch (error) {
     console.error('Login error:', error);
     return errorResponse('Internal server error', 500);
