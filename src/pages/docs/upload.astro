@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { UploadForm } from '../../components/docs/UploadForm';
+import jwt from 'jsonwebtoken';
+
+// Check authentication on the server side
+const authCookie = Astro.cookies.get('auth_token');
+if (!authCookie?.value) {
+  return Astro.redirect('/login');
+}
+
+try {
+  // Verify the JWT token directly
+  const decoded = jwt.verify(authCookie.value, process.env.JWT_SECRET || 'your-secret-key');
+  if (!decoded) {
+    return Astro.redirect('/login');
+  }
+} catch (error) {
+  console.error('Auth verification error:', error);
+  return Astro.redirect('/login');
+}
+---
+
+<Layout title="Upload Document - Astro Wiki">
+  <main class="container mx-auto px-4 py-8">
+    <div id="auth-check" data-redirect="/login" style="display: none;"></div>
+    <UploadForm client:load />
+  </main>
+</Layout>
+
+<script>
+  // Additional client-side check for real-time authentication status
+  const authCheck = document.getElementById('auth-check');
+  const token = localStorage.getItem('auth_token');
+  if (!token && authCheck) {
+    window.location.href = authCheck.dataset.redirect || '/login';
+  }
+</script>
