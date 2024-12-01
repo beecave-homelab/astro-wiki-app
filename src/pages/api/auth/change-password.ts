@@ -1,39 +1,21 @@
 import type { APIRoute } from 'astro';
 import bcrypt from 'bcryptjs';
 import { pool } from '../../../lib/db';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+import { verifyAuthToken } from '../../../lib/auth';
+import { errorResponse, jsonResponse } from '../../../lib/api';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    const token = authHeader.split(' ')[1];
-    let decoded;
-    try {
-      decoded = jwt.verify(token, JWT_SECRET) as { email: string };
-    } catch (err) {
-      return new Response(JSON.stringify({ error: 'Invalid token' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' }
-      });
+    const decoded = verifyAuthToken(request);
+    if (!decoded) {
+      return errorResponse('Unauthorized', 401);
     }
 
     const body = await request.json();
     const { currentPassword, newPassword } = body;
 
     if (!currentPassword || !newPassword) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return errorResponse('Missing required fields');
     }
 
     console.log('Fetching user with email:', decoded.email);
@@ -48,19 +30,13 @@ export const POST: APIRoute = async ({ request }) => {
     console.log('User data found:', userData ? 'yes' : 'no');
 
     if (!userData) {
-      return new Response(JSON.stringify({ error: 'User not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return errorResponse('User not found', 404);
     }
 
     // Verify current password
     const isValidPassword = await bcrypt.compare(currentPassword, userData.password_hash);
     if (!isValidPassword) {
-      return new Response(JSON.stringify({ error: 'Current password is incorrect' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-      });
+      return errorResponse('Current password is incorrect', 400);
     }
 
     // Hash new password
@@ -75,10 +51,7 @@ export const POST: APIRoute = async ({ request }) => {
       [hashedPassword, userData.id]
     );
 
-    return new Response(JSON.stringify({ message: 'Password updated successfully' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return jsonResponse({ message: 'Password updated successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
     // Log detailed error information
@@ -88,9 +61,6 @@ export const POST: APIRoute = async ({ request }) => {
         stack: error.stack,
       });
     }
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return errorResponse('Internal server error', 500);
   }
 };
