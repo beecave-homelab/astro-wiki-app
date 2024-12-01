@@ -105,7 +105,6 @@ This Astro Wiki App follows a well-organized structure:
      - `/styles`: Global and component-specific styles
 
      **Core Files by Directory**:
-     
      *Root*:
      - `env.d.ts`: TypeScript environment declarations and type definitions
 
