@@ -57,6 +57,18 @@
 │   │   └── migrations
 │   │       └── 001_create_users_table.sql
 │   ├── env.d.ts
+│   ├── middleware
+│   │   └── auth.ts
+│   ├── pages
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   │   ├── login.ts
+│   │   │   │   └── logout.ts
+│   │   │   └── docs
+│   │   │       └── upload.ts
+│   │   ├── docs
+│   │   │   └── upload.astro
+│   │   └── profile.astro
 │   └── layouts
 │       ├── DocsLayout.astro
 │       └── Layout.astro
@@ -84,6 +96,8 @@ This Astro Wiki App follows a well-organized structure:
      - `/content`: Documentation and media files
      - `/db`: Database management and migrations
      - `/layouts`: Page templates and layouts
+     - `/middleware`: Authentication and request middleware
+     - `/pages`: Application pages and API routes
 
      **Core Files by Directory**:
      *Root*:
@@ -107,6 +121,16 @@ This Astro Wiki App follows a well-organized structure:
      - `db/init.ts`: Database initialization script
      - `db/migrate.ts`: Database migration runner
      - `db/migrations/001_create_users_table.sql`: Initial user table schema
+
+     *Middleware*:
+     - `middleware/auth.ts`: Authentication middleware for protected routes
+
+     *Pages*:
+     - `pages/profile.astro`: User profile page
+     - `pages/docs/upload.astro`: Document upload interface
+     - `pages/api/auth/login.ts`: Authentication login endpoint
+     - `pages/api/auth/logout.ts`: Authentication logout endpoint
+     - `pages/api/docs/upload.ts`: Document upload API endpoint
 
      *Layouts*:
      - `layouts/DocsLayout.astro`: Documentation page layout template
